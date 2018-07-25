@@ -36,6 +36,8 @@ class MainWindow : public QMainWindow {
   private:
     const QString filenames21[2] = {"f-1", "f1"};
     const QString filenames22[4] = {"f-1-1", "f-11", "f1-1", "f11"};
+    const QString cameras21[2] = {"0 -1", "0 1"};
+    const QString cameras22[4] = {"-1 -1", "-1 1", "1 -1", "1 1"};
 
     Ui::MainWindow *ui;
     QString Chaotica, Chaos, TempDir;

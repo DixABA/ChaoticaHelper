@@ -115,10 +115,27 @@ void MainWindow::ProcessXML(QString Name)
   for (int i = 0; i < Count; i++)
     {
       File.setFileName(TempDir + (Render21 ? filenames21[i] : filenames22[i]) + ".chaos");
+      QString Result;
 
       if (File.open(QFile::WriteOnly))
         {
-          File.write(data.replace("a", "a").toUtf8());
+          if (Render21)
+            {
+              Result = data.replace(QRegExp("<int name=\"image_width\">\\d+</int>"), "<int name=\"image_width\">1920</int>"); // Ширина
+              Result = Result.replace(QRegExp("<int name=\"image_height\">\\d+</int>"), "<int name=\"image_height\">630</int>"); // Высота
+              Result = Result.replace("<vec2 name=\"pos\">0 0</vec2>", QString("<vec2 name=\"pos\">%1</vec2>").arg(cameras21[i])); // Положение камеры
+              Result = Result.replace(QRegExp("<IFS name=\"[a-zA-Z0-9 ]+\">"), QString("<IFS name=\"%1\">").arg(filenames21[i])); // Имя
+            }
+          else
+            {
+              Result = data.replace(QRegExp("<int name=\"image_width\">\\d+</int>"), "<int name=\"image_width\">1100</int>"); // Ширина
+              Result = Result.replace(QRegExp("<int name=\"image_height\">\\d+</int>"), "<int name=\"image_height\">1100</int>"); // Высота
+              Result = Result.replace("<vec2 name=\"pos\">0 0</vec2>", QString("<vec2 name=\"pos\">%1</vec2>").arg(cameras22[i])); // Положение камеры
+              Result = Result.replace(QRegExp("<IFS name=\"[a-zA-Z0-9 ]+\">"), QString("<IFS name=\"%1\">").arg(filenames22[i])); // Имя
+            }
+
+          Result = Result.replace(QRegExp("<int name=\"image_aa_level\">\\d+</int>"), "<int name=\"image_aa_level\">3</int>"); // Antialiasing
+          File.write(Result.toUtf8());
           File.close();
         }
       else
