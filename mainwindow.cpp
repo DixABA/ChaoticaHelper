@@ -72,7 +72,42 @@ void MainWindow::ProcessFinished(int code)
 
   if (RemainingProc == 0)
     {
-      QMessageBox::about(this, "@@", "Yea");
+      if (Render21)
+        {
+          QFile *PNGs[2];
+
+          for (int i = 0; i < 2; i++)
+            {
+              PNGs[i] = new QFile(TempDir + filenames21[i] + ".png");
+
+              if (!PNGs[i]->open(QFile::ReadOnly))
+                {
+                  QMessageBox::about(this, "@@", "No PNG in temp dir, bro");
+                  return;
+                }
+
+              PNGs[i]->close();
+              PNGs[i]->deleteLater();
+            }
+        }
+      else
+        {
+          QFile *PNGs[4];
+
+          for (int i = 0; i < 4; i++)
+            {
+              PNGs[i] = new QFile(TempDir + filenames22[i] + ".png");
+
+              if (!PNGs[i]->open(QFile::ReadOnly))
+                {
+                  QMessageBox::about(this, "@@", "No PNG in temp dir, bro");
+                  return;
+                }
+
+              PNGs[i]->close();
+              PNGs[i]->deleteLater();
+            }
+        }
     }
 }
 
