@@ -4,6 +4,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+int RemainingProc;
+bool ValidChaotica;
+
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::MainWindow)
@@ -65,7 +68,12 @@ void MainWindow::on_RenderType21_toggled(bool checked)
 
 void MainWindow::ProcessFinished(int code)
 {
-  QMessageBox::about(this, "@@", QString::number(code));
+  RemainingProc--;
+
+  if (RemainingProc == 0)
+    {
+      QMessageBox::about(this, "@@", "Yea");
+    }
 }
 
 void MainWindow::ProcessWrote()
@@ -79,6 +87,7 @@ void MainWindow::ProcessWrote()
     {
       Process->close();
       Process->deleteLater();
+      ValidChaotica = true;
     }
 }
 
@@ -90,14 +99,60 @@ void MainWindow::MakeReady()
     }
 }
 
+void MainWindow::ProcessXML(QString Name)
+{
+  QString data;
+  QFile File(Name);
+
+  if (File.open(QFile::ReadOnly))
+    {
+      data = File.readAll();
+      File.close();
+    }
+
+  int Count = Render21 ? 2 : 4;
+
+  for (int i = 0; i < Count; i++)
+    {
+      File.setFileName(TempDir + (Render21 ? filenames21[i] : filenames22[i]) + ".chaos");
+
+      if (File.open(QFile::WriteOnly))
+        {
+          File.write(data.replace("a", "a").toUtf8());
+          File.close();
+        }
+      else
+        {
+          QMessageBox::about(this, "@@", "Nuu, wrong temp dir, bro");
+        }
+    }
+}
+
 void MainWindow::on_ProcessButton_clicked()
 {
+  ValidChaotica = false;
   Process = new QProcess(this);
   connect(Process, SIGNAL(readyRead()), this, SLOT(ProcessWrote()));
   Process->start(Chaotica);
+  Process->waitForFinished(5000);
+
+  if (!ValidChaotica)
+    {
+      if (!Process->state() == QProcess::NotRunning)
+        {
+          Process->close();
+          Process->waitForFinished(5000);
+        }
+
+      QMessageBox::about(this, "@@", "Naaaaaaay");
+      return;
+    }
+
   Processes.clear();
   int ProcCount = Render21 ? 2 : 4;
+  RemainingProc = ProcCount;
   QVector<QStringList> Files;
+  ProcessXML(Chaos);
 
   for (int i = 0; i < ProcCount; i++)
     {

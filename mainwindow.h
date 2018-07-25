@@ -1,16 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QMainWindow>
+#include <QProcess>
+
 // Разделитель имени файлов
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_WIN)
   #define SEP "\\"
 #else
   #define SEP "/"
 #endif
 
-#include <QMainWindow>
-
-#include <QProcess>
 
 namespace Ui {
   class MainWindow;
@@ -25,17 +25,13 @@ class MainWindow : public QMainWindow {
 
   private slots:
     void on_ChaoticaPathSetButton_clicked();
-
     void on_ChaosPathSetButton_clicked();
-
     void on_TempPathSetButton_clicked();
-
     void on_RenderType21_toggled(bool checked);
+    void on_ProcessButton_clicked();
 
     void ProcessFinished(int code);
     void ProcessWrote();
-
-    void on_ProcessButton_clicked();
 
   private:
     const QString filenames21[2] = {"f-1", "f1"};
@@ -48,6 +44,7 @@ class MainWindow : public QMainWindow {
     QProcess *Process;
 
     void MakeReady();
+    void ProcessXML(QString Name);
 };
 
 #endif // MAINWINDOW_H
