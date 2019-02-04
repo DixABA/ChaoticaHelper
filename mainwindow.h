@@ -14,14 +14,14 @@
 
 namespace Ui {
   class MainWindow;
-}
+} // namespace Ui
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
   public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
   private slots:
     void on_ChaoticaPathSetButton_clicked();
@@ -41,12 +41,13 @@ class MainWindow : public QMainWindow {
 
     Ui::MainWindow *ui;
     QString Chaotica, Chaos, TempDir;
-    bool Render21;
+    bool Render21{};
     QVector<QProcess *> Processes;
-    QProcess *Process;
+    QProcess *Process{};
 
     void MakeReady();
-    void ProcessXML(QString Name);
+    void ProcessXML(const QString &Name);
+    static QString strrrr;
 };
 
 #endif // MAINWINDOW_H

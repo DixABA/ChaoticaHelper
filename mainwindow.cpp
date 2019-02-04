@@ -72,23 +72,24 @@ void MainWindow::ProcessFinished(int code)
 
   if (RemainingProc == 0)
     {
+      QImage BigResult, FullHDResult;
+
       if (Render21)
         {
-          QFile *PNGs[2];
+          QImage Imgs[2];
 
           for (int i = 0; i < 2; i++)
             {
-              PNGs[i] = new QFile(TempDir + filenames21[i] + ".png");
-
-              if (!PNGs[i]->open(QFile::ReadOnly))
+              if (!Imgs[i].load(TempDir + filenames21[i] + ".png"))
                 {
                   QMessageBox::about(this, "@@", "No PNG in temp dir, bro");
                   return;
                 }
-
-              PNGs[i]->close();
-              PNGs[i]->deleteLater();
             }
+
+          QImage::Format Format =  Imgs[0].format();
+          FullHDResult = QImage(1920, 1080, Format);
+          BigResult = QImage(1920, 1111, Format);
         }
       else
         {
@@ -100,6 +101,11 @@ void MainWindow::ProcessFinished(int code)
 
               if (!PNGs[i]->open(QFile::ReadOnly))
                 {
+                  for (i--; i >= 0; i--)
+                    {
+                      PNGs[i]->deleteLater();
+                    }
+
                   QMessageBox::about(this, "@@", "No PNG in temp dir, bro");
                   return;
                 }
